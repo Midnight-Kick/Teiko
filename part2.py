@@ -1,5 +1,5 @@
 import csv
-import math
+import matplotlib.pyplot as plt
 
 cell_populations = ['b_cell', 'cd8_t_cell', 'cd4_t_cell', 'nk_cell', 'monocyte']
 
@@ -8,6 +8,7 @@ non_responders = {pop: [] for pop in cell_populations}
 
 response_map = {}
 sample_type_map = {}
+
 with open('cell-count.csv', 'r') as file:
     reader = csv.DictReader(file)
     for row in reader:
@@ -22,25 +23,24 @@ with open('cell-count-relative.csv', 'r') as file:
             response = response_map.get(sample)
             population = row['population']
             percentage = float(row['percentage'])
-
             
-            if response == 'y':  
+            if response == 'y':
                 responders[population].append(percentage)
-            elif response == 'n':  
+            elif response == 'n':
                 non_responders[population].append(percentage)
 
-def mean(data):
-    return sum(data) / len(data) if data else 0
-
-def stdev(data, mean_value):
-    return math.sqrt(sum((x - mean_value) ** 2 for x in data) / len(data))
+for pop in cell_populations:
+    data = [responders[pop], non_responders[pop]]
+    plt.boxplot(data, labels=['Responders', 'Non-Responders'])
+    plt.title(f'{pop} Relative Frequencies')
+    plt.ylabel('Relative Frequency (%)')
+    plt.show()
 
 for pop in cell_populations:
-    mean_responder = mean(responders[pop])
-    mean_non_responder = mean(non_responders[pop])
-    stdev_responder = stdev(responders[pop], mean_responder)
-    stdev_non_responder = stdev(non_responders[pop], mean_non_responder)
-
+    mean_responder = sum(responders[pop]) / len(responders[pop]) if responders[pop] else 0
+    mean_non_responder = sum(non_responders[pop]) / len(non_responders[pop]) if non_responders[pop] else 0
+    
     print(f"Population: {pop}")
-    print(f"  Responders - Mean: {mean_responder:.2f}, Stdev: {stdev_responder:.2f}")
-    print(f"  Non-Responders - Mean: {mean_non_responder:.2f}, Stdev: {stdev_non_responder:.2f}")
+    print(f"  Responders - Mean: {mean_responder:.2f}")
+    print(f"  Non-Responders - Mean: {mean_non_responder:.2f}")
+
