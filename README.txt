@@ -1,6 +1,7 @@
 Instructions:
 Running P1.py will produce the results found in cell-count-relative.csv. 
-Running P2.py will produce boxplots for each cell group. I also added the boxplots in a folder to refer to more easily.
+Running P2.py will produce boxplots for each cell group. The matplotlib library needs to be installed for the boxplots to show.
+I also added the boxplots in a folder to refer to more easily.
 
 Python
 P2 part b:
